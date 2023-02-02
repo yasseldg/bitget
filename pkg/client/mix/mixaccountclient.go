@@ -131,3 +131,18 @@ func (p *MixAccountClient) OpenCount(params account.OpenCountReq) (string, error
 
 	return resp, err
 }
+
+func (p *MixAccountClient) SetPositionMode(params account.SetPositionModeReq) (string, error) {
+
+	postBody, jsonErr := internal.ToJson(params)
+
+	if jsonErr != nil {
+		return "", jsonErr
+	}
+
+	uri := constants.MixAccount + "/setPositionMode"
+
+	resp, err := p.BitgetRestClient.DoPost(uri, postBody)
+
+	return resp, err
+}

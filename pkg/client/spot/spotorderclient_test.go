@@ -1,9 +1,10 @@
 package spot
 
 import (
-	"bitget/pkg/model/spot/order"
 	"fmt"
 	"testing"
+
+	"bitget/pkg/model/spot/order"
 )
 
 func TestSpotOrderClient_Orders(t *testing.T) {

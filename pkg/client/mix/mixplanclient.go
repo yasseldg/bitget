@@ -165,6 +165,20 @@ func (p *MixPlanClient) CurrentPlan(symbol string, isPlan string) (string, error
 
 }
 
+func (p *MixPlanClient) PlacePositionTPSL(params plan.PlacePositionTPSLReq) (string, error) {
+	postBody, jsonErr := internal.ToJson(params)
+
+	if jsonErr != nil {
+		return "", jsonErr
+	}
+
+	uri := constants.MixPlan + "/placePositionsTPSL"
+
+	resp, err := p.BitgetRestClient.DoPost(uri, postBody)
+
+	return resp, err
+}
+
 /**
  * Obtain the list of historical plan commissions (profit and loss stop)
  * @param symbol

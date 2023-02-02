@@ -7,10 +7,11 @@ import (
 	"bitget/internal/model"
 	"bitget/logging/applogger"
 	"fmt"
-	"github.com/gorilla/websocket"
-	"github.com/robfig/cron"
 	"sync"
 	"time"
+
+	"github.com/gorilla/websocket"
+	"github.com/robfig/cron"
 )
 
 type BitgetBaseWsClient struct {
@@ -30,9 +31,11 @@ type BitgetBaseWsClient struct {
 }
 
 func (p *BitgetBaseWsClient) Init() *BitgetBaseWsClient {
+	creds := config.GetDefaultCredentials()
+
 	p.Connection = false
 	p.AllSuribe = model.NewSet()
-	p.Signer = new(Signer).Init(config.SecretKey)
+	p.Signer = new(Signer).Init(creds.SecretKey)
 	p.ScribeMap = make(map[model.SubscribeReq]OnReceive)
 	p.BooksMap = make(map[model.SubscribeReq]model.BookInfo)
 	p.SendMutex = &sync.Mutex{}
@@ -66,12 +69,14 @@ func (p *BitgetBaseWsClient) ConnectWebSocket() {
 }
 
 func (p *BitgetBaseWsClient) Login() {
+	creds := config.GetDefaultCredentials()
+
 	timesStamp := internal.TimesStampSec()
 	sign := p.Signer.Sign(constants.WsAuthMethod, constants.WsAuthPath, "", timesStamp)
 
 	loginReq := model.WsLoginReq{
-		ApiKey:     config.ApiKey,
-		Passphrase: config.PASSPHRASE,
+		ApiKey:     creds.ApiKey,
+		Passphrase: creds.PASSPHRASE,
 		Timestamp:  timesStamp,
 		Sign:       sign,
 	}
@@ -126,14 +131,14 @@ func (p *BitgetBaseWsClient) tickerLoop() {
 
 			if elapsedSecond > constants.ReconnectWaitSecond {
 				applogger.Info("WebSocket reconnect...")
-				p.disconnectWebSocket()
+				p.DisconnectWebSocket()
 				p.ConnectWebSocket()
 			}
 		}
 	}
 }
 
-func (p *BitgetBaseWsClient) disconnectWebSocket() {
+func (p *BitgetBaseWsClient) DisconnectWebSocket() {
 	if p.WebSocketClient == nil {
 		return
 	}

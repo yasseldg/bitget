@@ -15,19 +15,25 @@ type BitgetRestClient struct {
 	ApiSecretKey string
 	Passphrase   string
 	BaseUrl      string
-	HttpClient   http.Client
+	HttpClient   *http.Client
 	Signer       *Signer
 }
 
 func (p *BitgetRestClient) Init() *BitgetRestClient {
-	p.ApiKey = config.ApiKey
-	p.ApiSecretKey = config.SecretKey
+	creds := config.GetDefaultCredentials()
+	return p.InitWithCreds(creds)
+}
+func (p *BitgetRestClient) InitWithCreds(creds *config.ApiCreds) *BitgetRestClient {
+	p.ApiKey = creds.ApiKey
+	p.ApiSecretKey = creds.SecretKey
+	p.Passphrase = creds.PASSPHRASE
+
 	p.BaseUrl = config.BaseUrl
-	p.Passphrase = config.PASSPHRASE
-	p.Signer = new(Signer).Init(config.SecretKey)
-	p.HttpClient = http.Client{
+	p.Signer = new(Signer).Init(creds.SecretKey)
+	p.HttpClient = &http.Client{
 		Timeout: time.Duration(config.TimeoutSecond) * time.Second,
 	}
+
 	return p
 }
 

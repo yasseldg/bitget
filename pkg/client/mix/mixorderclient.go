@@ -100,6 +100,16 @@ func (p *MixOrderClient) CancelBatchOrders(params order.CancelBatchOrdersReq) (s
 
 }
 
+func (p *MixOrderClient) CancelAllOrders(params order.CancelAllOrderReq) (string, error) {
+	postBody, jsonErr := internal.ToJson(params)
+	if jsonErr != nil {
+		return "", jsonErr
+	}
+	uri := constants.MixOrder + "/cancel-all-orders"
+	resp, err := p.BitgetRestClient.DoPost(uri, postBody)
+	return resp, err
+}
+
 /**
  * Get Historical Delegation
  * @param symbol

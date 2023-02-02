@@ -1,9 +1,10 @@
 package mix
 
 import (
-	"bitget/pkg/model/mix/account"
 	"fmt"
 	"testing"
+
+	"bitget/pkg/model/mix/account"
 )
 
 func TestMixAccountClient_GetAccount(t *testing.T) {

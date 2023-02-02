@@ -128,7 +128,8 @@ func (p *MixMarketClient) Candles(symbol string, granularity string, startTime s
 	return resp, err
 }
 
-/**
+/*
+*
 获取币种指数。
 */
 func (p *MixMarketClient) Index(symbol string) (string, error) {
