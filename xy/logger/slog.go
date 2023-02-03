@@ -1,9 +1,10 @@
-package applogger
+package slog
 
 import (
+	"os"
+
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
-	"os"
 )
 
 var sugaredLogger *zap.SugaredLogger
@@ -15,7 +16,7 @@ func init() {
 		MessageKey:  "msg",
 		LevelKey:    "level",
 		EncodeLevel: zapcore.CapitalColorLevelEncoder,
-		EncodeTime:  zapcore.ISO8601TimeEncoder,
+		EncodeTime:  zapcore.TimeEncoderOfLayout("2006.01.02 15:04:05"),
 	}
 
 	// define default level as debug level
