@@ -79,6 +79,7 @@ func ToJson(v interface{}) (string, error) {
 	}
 	return string(result), nil
 }
+
 func powerf(x float64, n int) float64 {
 	ans := 1.0
 	for n != 0 {

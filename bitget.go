@@ -150,6 +150,7 @@ func (ws *WsClient) SubscribeSpotAccount() UnscribeFunc {
 
 	return func() { ws.bws.UnSubscribe(sub) }
 }
+
 func (ws *WsClient) SubscribeSpotOrder(symbols ...string) UnscribeFunc {
 	subs := make([]model.SubscribeReq, len(symbols))
 	for i, s := range symbols {
@@ -165,16 +166,17 @@ func (ws *WsClient) SubscribeSpotOrder(symbols ...string) UnscribeFunc {
 }
 
 // futures
-func (ws *WsClient) SubscribeFutures(channel string, symbols ...string) UnscribeFunc {
+func (ws *WsClient) SubscribeFutures(listener common.OnReceive, channel string, symbols ...string) UnscribeFunc {
 	subs := make([]model.SubscribeReq, len(symbols))
 	for i, s := range symbols {
 		subs[i] = model.SubscribeReq{
-			InstType: "MC",
+			InstType: "mc",
 			Channel:  channel,
 			InstId:   s,
 		}
 	}
-	ws.bws.SubscribeDef(subs)
+
+	ws.bws.Subscribe(subs, listener)
 
 	return func() { ws.bws.UnSubscribe(subs) }
 }
