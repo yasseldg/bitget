@@ -33,6 +33,6 @@ func TestBitgetWsClient_New(t *testing.T) {
 	client.Subscribe(channels, func(message string) {
 		fmt.Println("appoint:" + message)
 	})
-	client.Connect()
 
+	client.Connect()
 }
