@@ -8,10 +8,12 @@ type DepthtResp struct {
 }
 
 type Depth struct {
-	Asks      [][]string `json:"asks"`
-	Bids      [][]string `json:"bids"`
-	Timestamp string     `json:"timestamp"`
+	Asks      []AskBid `json:"asks"`
+	Bids      []AskBid `json:"bids"`
+	Timestamp string   `json:"timestamp"`
 }
+
+type AskBid []string
 
 // {
 // 	"code": "00000",

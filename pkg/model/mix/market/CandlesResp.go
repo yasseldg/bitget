@@ -1,6 +1,8 @@
 package market
 
-type CandlesResp [][]string
+type CandlesResp []Candle
+
+type Candle []string
 
 // [
 //   [
