@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/yasseldg/bitget/constants"
+	slog "github.com/yasseldg/bitget/xy/logger"
 	// "github.com/goccy/go-json"
 )
 
@@ -101,4 +102,11 @@ func GetSignedInt(checksum string) string {
 		return strconv.FormatUint(a, 10)
 	}
 	return checksum
+}
+
+func GetPushObj(msg string, obj any) {
+	err := json.Unmarshal([]byte(msg), obj)
+	if err != nil {
+		slog.Error("json.Unmarshal([]byte(msg), obj)  --  error: %s", err)
+	}
 }
