@@ -1,14 +1,15 @@
 package common
 
 import (
-	"bitget/config"
-	"bitget/constants"
-	"bitget/internal"
-	"bitget/internal/model"
-	slog "bitget/xy/logger"
 	"fmt"
 	"sync"
 	"time"
+
+	"github.com/yasseldg/bitget/config"
+	"github.com/yasseldg/bitget/constants"
+	"github.com/yasseldg/bitget/internal"
+	"github.com/yasseldg/bitget/internal/model"
+	slog "github.com/yasseldg/bitget/xy/logger"
 
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron"

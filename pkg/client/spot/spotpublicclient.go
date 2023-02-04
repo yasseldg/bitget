@@ -1,9 +1,9 @@
 package spot
 
 import (
-	"bitget/constants"
-	"bitget/internal"
-	"bitget/internal/common"
+	"github.com/yasseldg/bitget/constants"
+	"github.com/yasseldg/bitget/internal"
+	"github.com/yasseldg/bitget/internal/common"
 )
 
 type SpotPublicClient struct {

@@ -1,4 +1,4 @@
-module bitget
+module github.com/yasseldg/bitget
 
 go 1.19
 

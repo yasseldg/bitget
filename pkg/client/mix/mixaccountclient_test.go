@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"bitget/pkg/model/mix/account"
+	"github.com/yasseldg/bitget/pkg/model/mix/account"
 )
 
 func TestMixAccountClient_GetAccount(t *testing.T) {

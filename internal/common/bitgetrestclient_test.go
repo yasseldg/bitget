@@ -1,8 +1,9 @@
 package common
 
 import (
-	"bitget/internal"
 	"testing"
+
+	"github.com/yasseldg/bitget/internal"
 )
 
 func TestBitgetRestClient_HttpExecuter(t *testing.T) {

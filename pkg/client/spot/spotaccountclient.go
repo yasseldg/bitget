@@ -1,10 +1,10 @@
 package spot
 
 import (
-	"bitget/constants"
-	"bitget/internal"
-	"bitget/internal/common"
-	"bitget/pkg/model/spot/account"
+	"github.com/yasseldg/bitget/constants"
+	"github.com/yasseldg/bitget/internal"
+	"github.com/yasseldg/bitget/internal/common"
+	"github.com/yasseldg/bitget/pkg/model/spot/account"
 )
 
 type SpotAccountClient struct {

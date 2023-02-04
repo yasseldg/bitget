@@ -1,9 +1,10 @@
 package common
 
 import (
-	"bitget/internal"
 	"fmt"
 	"testing"
+
+	"github.com/yasseldg/bitget/internal"
 )
 
 func TestSigner_Sign(t *testing.T) {

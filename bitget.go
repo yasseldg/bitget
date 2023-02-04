@@ -4,12 +4,12 @@ import (
 	"net/http"
 	"strings"
 
-	"bitget/internal/common"
-	"bitget/internal/model"
-	"bitget/pkg/client/broker"
-	"bitget/pkg/client/mix"
-	"bitget/pkg/client/spot"
-	"bitget/pkg/client/ws"
+	"github.com/yasseldg/bitget/internal/common"
+	"github.com/yasseldg/bitget/internal/model"
+	"github.com/yasseldg/bitget/pkg/client/broker"
+	"github.com/yasseldg/bitget/pkg/client/mix"
+	"github.com/yasseldg/bitget/pkg/client/spot"
+	"github.com/yasseldg/bitget/pkg/client/ws"
 )
 
 // client

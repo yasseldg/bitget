@@ -1,9 +1,10 @@
 package spot
 
 import (
-	"bitget/pkg/model/spot/account"
 	"fmt"
 	"testing"
+
+	"github.com/yasseldg/bitget/pkg/model/spot/account"
 )
 
 func TestSpotAccountClient_Assets(t *testing.T) {

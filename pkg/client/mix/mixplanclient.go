@@ -1,10 +1,10 @@
 package mix
 
 import (
-	"bitget/constants"
-	"bitget/internal"
-	"bitget/internal/common"
-	"bitget/pkg/model/mix/plan"
+	"github.com/yasseldg/bitget/constants"
+	"github.com/yasseldg/bitget/internal"
+	"github.com/yasseldg/bitget/internal/common"
+	"github.com/yasseldg/bitget/pkg/model/mix/plan"
 )
 
 type MixPlanClient struct {

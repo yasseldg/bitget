@@ -1,16 +1,18 @@
 package main
 
 import (
-	"bitget"
-	"bitget/constants"
-	"bitget/internal/model"
-	"bitget/pkg/client/ws"
-	"bitget/pkg/model/mix/market"
-	slog "bitget/xy/logger"
 	"encoding/json"
 	"fmt"
 	"log"
 	"time"
+
+	"github.com/yasseldg/bitget"
+
+	"github.com/yasseldg/bitget/constants"
+	"github.com/yasseldg/bitget/internal/model"
+	"github.com/yasseldg/bitget/pkg/client/ws"
+	"github.com/yasseldg/bitget/pkg/model/mix/market"
+	slog "github.com/yasseldg/bitget/xy/logger"
 )
 
 func main() {

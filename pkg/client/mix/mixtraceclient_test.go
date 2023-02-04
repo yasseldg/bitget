@@ -1,11 +1,12 @@
 package mix
 
 import (
-	"bitget/pkg/model/mix/trace"
 	"bytes"
 	"fmt"
 	"hash/crc32"
 	"testing"
+
+	"github.com/yasseldg/bitget/pkg/model/mix/trace"
 )
 
 func TestMixTraceClient_CloseTrackOrder(t *testing.T) {

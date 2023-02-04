@@ -1,6 +1,6 @@
 package market
 
-import "bitget/pkg/model"
+import "github.com/yasseldg/bitget/pkg/model"
 
 type TickersResp struct {
 	model.BaseResp `json:",inline"`
