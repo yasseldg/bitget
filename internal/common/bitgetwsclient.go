@@ -5,11 +5,11 @@ import (
 	"sync"
 	"time"
 
+	sLog "github.com/yasseldg/bitget/as/log"
 	"github.com/yasseldg/bitget/config"
 	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal"
 	"github.com/yasseldg/bitget/internal/model"
-	slog "github.com/yasseldg/bitget/xy/logger"
 
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron"
@@ -61,15 +61,15 @@ func (p *BitgetBaseWsClient) Connect() {
 
 func (p *BitgetBaseWsClient) ConnectWebSocket() {
 	var err error
-	slog.Info("WebSocket connecting...")
+	sLog.Info("WebSocket connecting...")
 
 	p.WebSocketClient, _, err = websocket.DefaultDialer.Dial(config.WsUrl, nil)
 	if err != nil {
-		slog.Error("WebSocket connected error: %s\n", err)
+		sLog.Error("WebSocket connected error: %s\n", err)
 		return
 	}
 
-	slog.Info("WebSocket connected")
+	sLog.Info("WebSocket connected")
 	p.Connection = true
 }
 
@@ -122,21 +122,21 @@ func (p *BitgetBaseWsClient) SendByType(req model.WsBaseReq) {
 
 func (p *BitgetBaseWsClient) Send(data string) {
 	if p.WebSocketClient == nil {
-		slog.Error("WebSocket sent error: no connection available")
+		sLog.Error("WebSocket sent error: no connection available")
 		return
 	}
 
 	if data == constants.PingMessage {
-		slog.Debug("WebSocket sendMessage: %s", data)
+		sLog.Debug("WebSocket sendMessage: %s", data)
 	} else {
-		slog.Info("WebSocket sendMessage: %s", data)
+		sLog.Info("WebSocket sendMessage: %s", data)
 	}
 
 	p.SendMutex.Lock()
 	err := p.WebSocketClient.WriteMessage(websocket.TextMessage, []byte(data))
 	p.SendMutex.Unlock()
 	if err != nil {
-		slog.Error("WebSocket sent error: data=%s, error=%s", data, err)
+		sLog.Error("WebSocket sent error: data=%s, error=%s", data, err)
 	}
 }
 
@@ -155,13 +155,13 @@ func (p *BitgetBaseWsClient) SubscribeAll() {
 }
 
 func (p *BitgetBaseWsClient) tickerLoop() {
-	slog.Info("WebSocket TickerLoop started")
+	sLog.Info("WebSocket TickerLoop started")
 	for {
 		<-p.Ticker.C
-		slog.Debug("WebSocket ticker")
+		sLog.Debug("WebSocket ticker")
 		elapsedSecond := time.Since(p.LastReceivedTime).Seconds()
 		if elapsedSecond > constants.PingIntervalSecond {
-			slog.Info("WebSocket reconnect...")
+			sLog.Info("WebSocket reconnect...")
 			p.DisconnectWebSocket()
 			p.ConnectWebSocket()
 			if p.Connection {
@@ -178,28 +178,28 @@ func (p *BitgetBaseWsClient) DisconnectWebSocket() {
 		return
 	}
 
-	slog.Info("WebSocket disconnecting...")
+	sLog.Info("WebSocket disconnecting...")
 
 	err := p.WebSocketClient.Close()
 	if err != nil {
-		slog.Error("WebSocket disconnect error: %s\n", err)
+		sLog.Error("WebSocket disconnect error: %s\n", err)
 		return
 	}
 
-	slog.Info("WebSocket disconnected")
+	sLog.Info("WebSocket disconnected")
 }
 
 func (p *BitgetBaseWsClient) readLoop() {
 	for {
 		if p.WebSocketClient == nil {
-			slog.Warn("WebSocket Read error: no connection available")
+			sLog.Warn("WebSocket Read error: no connection available")
 			time.Sleep(time.Second)
 			continue
 		}
 
 		_, buf, err := p.WebSocketClient.ReadMessage()
 		if err != nil {
-			slog.Warn("WebSocket Read error: %s", err)
+			sLog.Warn("WebSocket Read error: %s", err)
 			time.Sleep(time.Second)
 			continue
 		}
@@ -208,7 +208,7 @@ func (p *BitgetBaseWsClient) readLoop() {
 
 		message := string(buf)
 		if message == constants.PongMessage {
-			slog.Debug("WebSocket Keep connected: %s", message)
+			sLog.Debug("WebSocket Keep connected: %s", message)
 			continue
 		}
 
@@ -222,7 +222,7 @@ func (p *BitgetBaseWsClient) readLoop() {
 
 		v, e = jsonMap["event"]
 		if e && v == constants.WsOpLogin {
-			slog.Info("WebSocket login msg: %s", message)
+			sLog.Info("WebSocket login msg: %s", message)
 			p.LoginStatus = true
 			continue
 		}
@@ -313,5 +313,5 @@ func (p *BitgetBaseWsClient) GetListener(argJson interface{}) OnReceive {
 type OnReceive func(message string)
 
 func (p *BitgetBaseWsClient) handleMessage(msg string) {
-	slog.Info("WebSocket default: %s ", msg)
+	sLog.Info("WebSocket default: %s ", msg)
 }

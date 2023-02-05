@@ -1,4 +1,4 @@
-package slog
+package sLog
 
 import (
 	"os"
@@ -6,6 +6,8 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
+
+const EncodeTimeFormat = "2006.01.02 15:04:05"
 
 var sugaredLogger *zap.SugaredLogger
 var atomicLevel zap.AtomicLevel
@@ -16,15 +18,20 @@ func init() {
 		MessageKey:  "msg",
 		LevelKey:    "level",
 		EncodeLevel: zapcore.CapitalColorLevelEncoder,
-		EncodeTime:  zapcore.TimeEncoderOfLayout("2006.01.02 15:04:05"),
+		EncodeTime:  zapcore.TimeEncoderOfLayout(EnvGet("LogTimeFormat", EncodeTimeFormat)),
 	}
 
 	// define default level as debug level
 	atomicLevel = zap.NewAtomicLevel()
-	atomicLevel.SetLevel(zapcore.DebugLevel)
+	err := atomicLevel.UnmarshalText([]byte(EnvGet("LogLevel", "DEBUG")))
+	if err != nil {
+		atomicLevel.SetLevel(zapcore.DebugLevel)
+	}
 
 	core := zapcore.NewCore(zapcore.NewConsoleEncoder(encoderCfg), os.Stdout, atomicLevel)
 	sugaredLogger = zap.New(core).Sugar()
+
+	Info("LOG_Level set to ( %s )", atomicLevel.String())
 }
 
 func SetLevel(level zapcore.Level) {
@@ -53,4 +60,14 @@ func Info(template string, args ...interface{}) {
 
 func Debug(template string, args ...interface{}) {
 	sugaredLogger.Debugf(template, args...)
+}
+
+// EnvGet
+func EnvGet(env_name, defaults string) string {
+
+	env, ok := os.LookupEnv(env_name)
+	if ok {
+		return env
+	}
+	return defaults
 }

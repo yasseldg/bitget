@@ -9,8 +9,9 @@ import (
 	"strconv"
 	"time"
 
+	sLog "github.com/yasseldg/bitget/as/log"
+
 	"github.com/yasseldg/bitget/constants"
-	slog "github.com/yasseldg/bitget/xy/logger"
 	// "github.com/goccy/go-json"
 )
 
@@ -107,6 +108,6 @@ func GetSignedInt(checksum string) string {
 func GetPushObj(msg string, obj any) {
 	err := json.Unmarshal([]byte(msg), obj)
 	if err != nil {
-		slog.Error("json.Unmarshal([]byte(msg), obj)  --  error: %s", err)
+		sLog.Error("json.Unmarshal([]byte(msg), obj)  --  error: %s", err)
 	}
 }

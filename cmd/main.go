@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/yasseldg/bitget"
+	sLog "github.com/yasseldg/bitget/as/log"
 
 	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal"
@@ -14,7 +15,6 @@ import (
 	"github.com/yasseldg/bitget/pkg/client/ws"
 	"github.com/yasseldg/bitget/pkg/model/mix/market"
 	wspush "github.com/yasseldg/bitget/pkg/model/ws"
-	slog "github.com/yasseldg/bitget/xy/logger"
 )
 
 func main() {
@@ -36,9 +36,9 @@ func wss() {
 	wss := bitget.NewWsClient()
 
 	wss.Init(func(message string) {
-		slog.Debug("message:" + message)
+		sLog.Debug("message:" + message)
 	}, func(message string) {
-		slog.Error(message)
+		sLog.Error(message)
 	}, false)
 
 	uFunc := wss.SubscribeFutures(listCandle, constants.WsChannel_candle1m, constants.InstrumentID_BTCUSDT)
@@ -56,10 +56,10 @@ func listCandle(msg string) {
 
 	internal.GetPushObj(msg, &pushObj)
 
-	slog.Info("Arg: %v  --  Action: %s", pushObj.Arg, pushObj.Action)
+	sLog.Debug("Arg: %v  --  Action: %s", pushObj.Arg, pushObj.Action)
 
 	for k, data := range pushObj.Data {
-		slog.Debug("%d: %v ", k, data)
+		sLog.Debug("%d: %v ", k, data)
 	}
 }
 
@@ -68,10 +68,10 @@ func listTrade(msg string) {
 
 	internal.GetPushObj(msg, &pushObj)
 
-	slog.Info("Arg: %v  --  Action: %s", pushObj.Arg, pushObj.Action)
+	sLog.Debug("Arg: %v  --  Action: %s", pushObj.Arg, pushObj.Action)
 
 	for k, data := range pushObj.Data {
-		slog.Debug("%d: %v ", k, data)
+		sLog.Debug("%d: %v ", k, data)
 	}
 }
 

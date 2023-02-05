@@ -1,10 +1,11 @@
 package ws
 
 import (
+	sLog "github.com/yasseldg/bitget/as/log"
+
 	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal/common"
 	"github.com/yasseldg/bitget/internal/model"
-	slog "github.com/yasseldg/bitget/xy/logger"
 )
 
 type BitgetWsClient struct {
@@ -21,7 +22,7 @@ func (p *BitgetWsClient) Init(needLogin bool, listener common.OnReceive, errorLi
 	p.bitgetBaseWsClient.StartTickerLoop()
 
 	if needLogin {
-		slog.Info("login in ...")
+		sLog.Info("login in ...")
 		p.bitgetBaseWsClient.Login()
 		for {
 			if !p.bitgetBaseWsClient.LoginStatus {
@@ -29,7 +30,7 @@ func (p *BitgetWsClient) Init(needLogin bool, listener common.OnReceive, errorLi
 			}
 			break
 		}
-		slog.Info("login in ... success")
+		sLog.Info("login in ... success")
 	}
 	return p
 }
