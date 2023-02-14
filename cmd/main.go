@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
+	"strings"
 	"time"
 
 	"github.com/yasseldg/bitget"
@@ -19,16 +19,16 @@ import (
 
 func main() {
 	t := time.Now()
-	log.Print("Test Main \n\n")
+	sLog.Info("Cmd Main \n\n")
 
 	// rest
-	// rest()
+	rest()
 
 	// ws
-	wss()
+	// wss()
 
 	fmt.Println()
-	log.Printf("Test Main: time: %d Segundos \n\n", time.Since(t)/time.Second)
+	sLog.Info("Cmd Main: time: %d Segundos \n\n", time.Since(t)/time.Second)
 }
 
 func wss() {
@@ -77,31 +77,107 @@ func listTrade(msg string) {
 
 func rest() {
 	c := bitget.NewClient()
-	first(c)
+	// first(c)
 
-	candles(c)
-	tickers(c)
-	ticker(c)
-	depth(c)
-	contracts(c)
+	historyFundRate(c)
+	currentFundRate(c)
+	openInterest(c)
+	// candles(c)
+	// tickers(c)
+	// ticker(c)
+	// depth(c)
+	// contracts(c)
 }
 
 func first(c *bitget.Client) {
 
-	resp, err := c.GetMixMarketService().Candles(constants.Symbol_BTCUSDT_UMCBL, constants.CandleInterval_1m, "1673036121000", "1673039121000")
+	resp, err := c.GetMixMarketService().HistoryFundRate(constants.Symbol_BTCUSDT_UMCBL, "", "", "false")
 	if err != nil {
-		log.Printf("[Err] %s", err)
+		sLog.Debug("[Err] %s", err)
 		return
 	}
 
-	log.Printf("resp: %v ", resp)
+	sLog.Debug("resp: %v ", resp)
 }
 
+// Get History Funding Rate
+func historyFundRate(c *bitget.Client) {
+
+	resp, err := c.GetMixMarketService().HistoryFundRate(constants.Symbol_BTCUSDT_UMCBL, "", "", "false")
+	if err != nil {
+		sLog.Error("%s", err)
+		return
+	}
+
+	var respObj market.HistoryFundingRateResp
+
+	err = json.Unmarshal([]byte(resp), &respObj)
+	if err != nil {
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+	}
+
+	arrObjs := []market.HistoryFundingRate{}
+	for k, data := range respObj.Data {
+		sLog.Info("%d: %#v ", k, data)
+
+		arrObjs = append([]market.HistoryFundingRate{data}, arrObjs...)
+	}
+	fmt.Println()
+
+	for k, data := range arrObjs {
+		sLog.Info("%d: %#v ", k, data)
+	}
+	fmt.Println()
+}
+
+// Get Current Funding Rate
+func currentFundRate(c *bitget.Client) {
+
+	resp, err := c.GetMixMarketService().CurrentFundRate(constants.Symbol_BTCUSDT_UMCBL)
+	if err != nil {
+		sLog.Error("%s", err)
+		return
+	}
+
+	var respObj market.FundingRateResp
+
+	err = json.Unmarshal([]byte(resp), &respObj)
+	if err != nil {
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+	}
+
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d ", respObj.Code, respObj.Msg, respObj.RequestTime)
+
+	sLog.Info("%#v \n", respObj.Data)
+}
+
+// Get Open Interest
+func openInterest(c *bitget.Client) {
+
+	resp, err := c.GetMixMarketService().OpenInterest(constants.Symbol_BTCUSDT_UMCBL)
+	if err != nil {
+		sLog.Error("%s", err)
+		return
+	}
+
+	var respObj market.OpenInterestResp
+
+	err = json.Unmarshal([]byte(resp), &respObj)
+	if err != nil {
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+	}
+
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d ", respObj.Code, respObj.Msg, respObj.RequestTime)
+
+	sLog.Info("%#v \n", respObj.Data)
+}
+
+// Get Candle Data
 func candles(c *bitget.Client) {
 
 	resp, err := c.GetMixMarketService().Candles(constants.Symbol_BTCUSDT_UMCBL, constants.CandleInterval_5m, "1673036121000", "1673039121000")
 	if err != nil {
-		log.Printf("[Err] %s", err)
+		sLog.Error("%s", err)
 		return
 	}
 
@@ -109,19 +185,20 @@ func candles(c *bitget.Client) {
 
 	err = json.Unmarshal([]byte(resp), &respObj)
 	if err != nil {
-		log.Printf("[Err] json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
 	}
 
 	for k, data := range respObj {
-		log.Printf("%d: %v ", k, data)
+		sLog.Info("%d: %v ", k, data)
 	}
 }
 
+// Get All Symbol Ticker
 func tickers(c *bitget.Client) {
 
 	resp, err := c.GetMixMarketService().Tickers(constants.ProductType_UMCBL)
 	if err != nil {
-		log.Printf("[Err] %s", err)
+		sLog.Error("%s", err)
 		return
 	}
 
@@ -129,21 +206,22 @@ func tickers(c *bitget.Client) {
 
 	err = json.Unmarshal([]byte(resp), &respObj)
 	if err != nil {
-		log.Printf("[Err] json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
 	}
 
-	log.Printf("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
 
 	for k, data := range respObj.Data {
-		log.Printf("%d: %v ", k, data)
+		sLog.Info("%d: %v ", k, data)
 	}
 }
 
+// Get Single Symbol Ticker
 func ticker(c *bitget.Client) {
 
 	resp, err := c.GetMixMarketService().Ticker(constants.Symbol_BTCUSDT_UMCBL)
 	if err != nil {
-		log.Printf("[Err] %s", err)
+		sLog.Error("%s", err)
 		return
 	}
 
@@ -151,18 +229,19 @@ func ticker(c *bitget.Client) {
 
 	err = json.Unmarshal([]byte(resp), &respObj)
 	if err != nil {
-		log.Printf("[Err] json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
 	}
 
-	log.Printf("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
-	log.Printf("data: %v ", respObj.Data)
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
+	sLog.Info("data: %v ", respObj.Data)
 }
 
+// Get Depth, Asks and Bids
 func depth(c *bitget.Client) {
 
 	resp, err := c.GetMixMarketService().Depth(constants.Symbol_BTCUSDT_UMCBL, "15")
 	if err != nil {
-		log.Printf("[Err] %s", err)
+		sLog.Error("%s", err)
 		return
 	}
 
@@ -170,19 +249,20 @@ func depth(c *bitget.Client) {
 
 	err = json.Unmarshal([]byte(resp), &respObj)
 	if err != nil {
-		log.Printf("[Err] json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
 		return
 	}
 
-	log.Printf("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
-	log.Printf("data: %v ", respObj.Data)
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
+	sLog.Info("data: %v ", respObj.Data)
 }
 
+// Get All Symbols
 func contracts(c *bitget.Client) {
 
 	resp, err := c.GetMixMarketService().Contracts(constants.ProductType_UMCBL)
 	if err != nil {
-		log.Printf("[Err] %s", err)
+		sLog.Error("%s", err)
 		return
 	}
 
@@ -190,15 +270,36 @@ func contracts(c *bitget.Client) {
 
 	err = json.Unmarshal([]byte(resp), &respObj)
 	if err != nil {
-		log.Printf("[Err] json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
 		return
 	}
 
-	log.Printf("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d \n\n", respObj.Code, respObj.Msg, respObj.RequestTime)
+
+	patterns := []string{"BTCUSDT", "ETHUSDT", "ADAUSDT", "BNB", "DOGE", "LTC", "MATIC"}
 
 	for k, data := range respObj.Data {
-		log.Printf("%d: %v ", k, data)
+		if FindPatterns(data.Symbol, patterns...) {
+			sLog.Info("%d: %v ", k, data)
+		} else {
+			sLog.Debug("%d: %v ", k, data)
+		}
 	}
+}
+
+func FindPatterns(path string, patterns ...string) bool {
+
+	if len(patterns) == 0 {
+		return true
+	}
+
+	for _, p := range patterns {
+		if strings.Contains(path, p) {
+			return true
+		}
+	}
+
+	return false
 }
 
 func mainOLD() {
