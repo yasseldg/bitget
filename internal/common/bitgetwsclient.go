@@ -5,11 +5,12 @@ import (
 	"sync"
 	"time"
 
-	sLog "github.com/yasseldg/bitget/as/log"
 	"github.com/yasseldg/bitget/config"
 	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal"
 	"github.com/yasseldg/bitget/internal/model"
+
+	"github.com/yasseldg/simplego/sLog"
 
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron"

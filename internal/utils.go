@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"time"
 
-	sLog "github.com/yasseldg/bitget/as/log"
-
 	"github.com/yasseldg/bitget/constants"
 	// "github.com/goccy/go-json"
+
+	"github.com/yasseldg/simplego/sLog"
 )
 
 func TimesStamp() string {

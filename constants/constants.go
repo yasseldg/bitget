@@ -108,18 +108,19 @@ const (
 	/**
 	WsChannels
 	*/
-	WsChannel_candle1W  = "candle1W"
-	WsChannel_candle1D  = "candle1D"
-	WsChannel_candle12H = "candle12H"
-	WsChannel_candle4H  = "candle4H"
-	WsChannel_candle1H  = "candle1H"
-	WsChannel_andle30m  = "andle30m"
-	WsChannel_candle15m = "candle15m"
-	WsChannel_candle5m  = "candle5m"
 	WsChannel_candle1m  = "candle1m"
+	WsChannel_candle5m  = "candle5m"
+	WsChannel_candle15m = "candle15m"
+	WsChannel_candle30m = "andle30m"
+	WsChannel_candle1H  = "candle1H"
+	WsChannel_candle4H  = "candle4H"
+	WsChannel_candle12H = "candle12H"
+	WsChannel_candle1D  = "candle1D"
+	WsChannel_candle1W  = "candle1W"
 
 	WsChannel_trade    = "trade"    // Retrieve the recent trades data.
 	WsChannel_tradeNew = "tradeNew" // Retrieve the recent trades data. The first snapshot will push 50 trade records
+	WsChannel_ticker   = "ticker"   // Retrieve the latest traded price, bid price, ask price and 24-hour trading volume of the instruments. Data will be pushed every 100 ms.
 
 	/**
 	InstrumentID

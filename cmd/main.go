@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/yasseldg/bitget"
-	sLog "github.com/yasseldg/bitget/as/log"
-
 	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal"
 	"github.com/yasseldg/bitget/internal/model"
 	"github.com/yasseldg/bitget/pkg/client/ws"
 	"github.com/yasseldg/bitget/pkg/model/mix/market"
 	wspush "github.com/yasseldg/bitget/pkg/model/ws"
+
+	"github.com/yasseldg/simplego/sLog"
 )
 
 func main() {
@@ -22,10 +22,10 @@ func main() {
 	sLog.Info("Cmd Main \n\n")
 
 	// rest
-	rest()
+	// rest()
 
 	// ws
-	// wss()
+	wss()
 
 	fmt.Println()
 	sLog.Info("Cmd Main: time: %d Segundos \n\n", time.Since(t)/time.Second)
@@ -41,11 +41,14 @@ func wss() {
 		sLog.Error(message)
 	}, false)
 
-	uFunc := wss.SubscribeFutures(listCandle, constants.WsChannel_candle1m, constants.InstrumentID_BTCUSDT)
+	uFunc := wss.SubscribeFutures(listTicker, constants.WsChannel_ticker, constants.InstrumentID_BTCUSDT)
 	defer uFunc()
 
-	uFunc = wss.SubscribeFutures(listTrade, constants.WsChannel_tradeNew, constants.InstrumentID_BTCUSDT)
-	defer uFunc()
+	// uFunc = wss.SubscribeFutures(listCandle, constants.WsChannel_candle1m, constants.InstrumentID_BTCUSDT)
+	// defer uFunc()
+
+	// uFunc = wss.SubscribeFutures(listTrade, constants.WsChannel_tradeNew, constants.InstrumentID_BTCUSDT)
+	// defer uFunc()
 
 	forever := make(chan struct{})
 	<-forever
@@ -75,12 +78,24 @@ func listTrade(msg string) {
 	}
 }
 
+func listTicker(msg string) {
+	var pushObj wspush.WsTickerPush
+
+	internal.GetPushObj(msg, &pushObj)
+
+	sLog.Debug("Arg: %v  --  Action: %s", pushObj.Arg, pushObj.Action)
+
+	for k, data := range pushObj.Data {
+		sLog.Debug("%d: %#v ", k, data)
+	}
+}
+
 func rest() {
 	c := bitget.NewClient()
 	// first(c)
 
-	historyFundRate(c)
-	currentFundRate(c)
+	// historyFundRate(c)
+	// currentFundRate(c)
 	openInterest(c)
 	// candles(c)
 	// tickers(c)
@@ -175,7 +190,7 @@ func openInterest(c *bitget.Client) {
 // Get Candle Data
 func candles(c *bitget.Client) {
 
-	resp, err := c.GetMixMarketService().Candles(constants.Symbol_BTCUSDT_UMCBL, constants.CandleInterval_5m, "1673036121000", "1673039121000")
+	resp, err := c.GetMixMarketService().Candles(constants.Symbol_BTCUSDT_UMCBL, constants.CandleInterval_5m, "1673696121000", "1673796121000")
 	if err != nil {
 		sLog.Error("%s", err)
 		return
