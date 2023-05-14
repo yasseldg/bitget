@@ -10,11 +10,30 @@ type WsTickerPush struct {
 }
 
 type WsTicker struct {
-	UnixTs      int64  `json:"ts"`
+	SystemTime  int64  `json:"systemTime"`
 	InstId      string `json:"instId"`
 	CapitalRate string `json:"capitalRate"`
 	Holding     string `json:"holding"`
-	Last        string `json:"last"`
+
+	// Last               string `json:"last"`
+	// High24h            string `json:"high24h"`
+	// Low24h             string `json:"low24h"`
+	// PriceChange        string `json:"priceChange"`
+	// PriceChangePercent string `json:"priceChangePercent"`
+	// MarketPrice        string `json:"marketPrice"`
+	// IndexPrice         string `json:"indexPrice"`
+	// BaseVolume         string `json:"baseVolume"`
+	// QuoteVolume        string `json:"quoteVolume"`
+	// OpenUtc            string `json:"openUtc"`
+	// ChgUtc             string `json:"chgUtc"`
+	// SymbolType         int64  `json:"symbolType"`
+	// SymbolId           string `json:"symbolId"`
+	// DeliveryPrice      string `json:"deliveryPrice"`
+	// BidSz              string `json:"bidSz"`
+	// AskSz              string `json:"askSz"`
+	// BestBid            string `json:"bestBid"`
+	// BestAsk            string `json:"bestAsk"`
+	// NextSettleTime     int64  `json:"nextSettleTime"`
 }
 
 // > instId 	String 	Instrument Name

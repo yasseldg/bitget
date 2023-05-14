@@ -126,4 +126,5 @@ const (
 	InstrumentID
 	*/
 	InstrumentID_BTCUSDT = "BTCUSDT"
+	InstrumentID_BTCUSD  = "BTCUSD"
 )
