@@ -1,12 +1,23 @@
 services:
-  vscode:
+  vscode_bitget:
     image: docker/dev-environments-go:stable-1
     container_name: vscode_bitget
+    labels:
+      - dev.orbstack.domains=bitget.local
     entrypoint:
     - sleep
     - infinity
     init: true
     volumes:
     - type: bind
+      source: .
+      target: /mnt/workspace
+    - type: bind
       source: /var/run/docker.sock
       target: /var/run/docker.sock
+    networks:
+      - go_dev
+
+networks:
+  go_dev:
+    external: true
