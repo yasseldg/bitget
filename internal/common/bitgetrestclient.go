@@ -1,7 +1,7 @@
 package common
 
 import (
-	"io/ioutil"
+	"io"
 	"net/http"
 	"strings"
 	"time"
@@ -24,13 +24,13 @@ func (p *BitgetRestClient) Init() *BitgetRestClient {
 	creds := config.GetDefaultCredentials()
 	return p.InitWithCreds(creds)
 }
-func (p *BitgetRestClient) InitWithCreds(creds *config.ApiCreds) *BitgetRestClient {
-	p.ApiKey = creds.ApiKey
-	p.ApiSecretKey = creds.SecretKey
-	p.Passphrase = creds.PASSPHRASE
+func (p *BitgetRestClient) InitWithCreds(creds config.InterApiCreds) *BitgetRestClient {
+	p.ApiKey = creds.Key()
+	p.ApiSecretKey = creds.Secret()
+	p.Passphrase = creds.Pass()
 
 	p.BaseUrl = config.BaseUrl
-	p.Signer = new(Signer).Init(creds.SecretKey)
+	p.Signer = new(Signer).Init(creds.Secret())
 	p.HttpClient = &http.Client{
 		Timeout: time.Duration(config.TimeoutSecond) * time.Second,
 	}
@@ -60,7 +60,7 @@ func (p *BitgetRestClient) DoPost(uri string, params string) (string, error) {
 
 	defer response.Body.Close()
 
-	bodyStr, err := ioutil.ReadAll(response.Body)
+	bodyStr, err := io.ReadAll(response.Body)
 	if err != nil {
 		return "", err
 	}
@@ -91,7 +91,7 @@ func (p *BitgetRestClient) DoGet(uri string, params map[string]string) (string, 
 
 	defer response.Body.Close()
 
-	bodyStr, err := ioutil.ReadAll(response.Body)
+	bodyStr, err := io.ReadAll(response.Body)
 	if err != nil {
 		return "", err
 	}

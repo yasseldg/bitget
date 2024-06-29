@@ -7,10 +7,12 @@ import (
 	"time"
 
 	"github.com/yasseldg/bitget"
+	"github.com/yasseldg/bitget/config"
 	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal"
 	"github.com/yasseldg/bitget/internal/model"
 	"github.com/yasseldg/bitget/pkg/client/ws"
+	"github.com/yasseldg/bitget/pkg/model/mix/account"
 	"github.com/yasseldg/bitget/pkg/model/mix/market"
 	wspush "github.com/yasseldg/bitget/pkg/model/ws"
 
@@ -22,10 +24,10 @@ func main() {
 	sLog.Info("Cmd Main \n\n")
 
 	// rest
-	// rest()
+	rest()
 
 	// ws
-	wss()
+	// wss()
 
 	fmt.Println()
 	sLog.Info("Cmd Main: time: %d Segundos \n\n", time.Since(t)/time.Second)
@@ -90,13 +92,35 @@ func listTicker(msg string) {
 	}
 }
 
+func fullApi() *config.ApiCreds {
+	return &config.ApiCreds{
+		ApiKey:     "bg_a76e95cc3da174f8741b498de7e88594",
+		SecretKey:  "f49682195d9dbfbb40fa287f7919dbe928aa91a948d3bf54d29a161d677e83fe",
+		PASSPHRASE: "GiXmpxVeX7CboxjgZjpYtTQtkKCtevrH",
+	}
+}
+
+func pereApi() *config.ApiCreds {
+	return &config.ApiCreds{
+		ApiKey:     "bg_0bb706efb2350a11055269d07e45439e",
+		SecretKey:  "aec2187f4016e03aa7d086b1cb54d54ea5356a2282fc343d627d7cde94f3a5ad",
+		PASSPHRASE: "MmCvf5FLxeQgdi3t28B9emgVVZw7FsRY",
+	}
+}
+
 func rest() {
-	c := bitget.NewClient()
-	// first(c)
+	// os.Setenv("BITGET_API_KEY", "bg_0bb706efb2350a11055269d07e45439e")
+	// os.Setenv("BITGET_API_SECRET", "aec2187f4016e03aa7d086b1cb54d54ea5356a2282fc343d627d7cde94f3a5ad")
+	// os.Setenv("BITGET_API_PASS", "MmCvf5FLxeQgdi3t28B9emgVVZw7FsRY")
+	// c := bitget.NewClient()
+
+	c := bitget.NewClientWithCreds(fullApi())
+	// apiKeyList(c)
+	allAccountBalance(c)
 
 	// historyFundRate(c)
 	// currentFundRate(c)
-	openInterest(c)
+	// openInterest(c)
 	// candles(c)
 	// tickers(c)
 	// ticker(c)
@@ -104,15 +128,48 @@ func rest() {
 	// contracts(c)
 }
 
-func first(c *bitget.Client) {
+func allAccountBalance(c *bitget.Client) {
 
-	resp, err := c.GetMixMarketService().HistoryFundRate(constants.Symbol_BTCUSDT_UMCBL, "", "", "false")
+	resp, err := c.GetAccountService().AllAccountBalance()
 	if err != nil {
 		sLog.Debug("[Err] %s", err)
 		return
 	}
 
 	sLog.Debug("resp: %v ", resp)
+}
+
+func apiKeyList(c *bitget.Client) {
+
+	resp, err := c.GetUserService().ApiKeyList("2")
+	if err != nil {
+		sLog.Debug("[Err] %s", err)
+		return
+	}
+
+	sLog.Debug("resp: %v ", resp)
+}
+
+func mixAccount(c *bitget.Client) {
+
+	resp, err := c.GetMixAccountService().Accounts(constants.ProductType_UMCBL)
+	if err != nil {
+		sLog.Debug("[Err] %s", err)
+		return
+	}
+
+	sLog.Debug("resp: %v ", resp)
+
+	var respObj account.AccountsResp
+
+	err = json.Unmarshal([]byte(resp), &respObj)
+	if err != nil {
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+	}
+
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d ", respObj.Code, respObj.Msg, respObj.RequestTime)
+
+	sLog.Info("%#v \n", respObj.Data)
 }
 
 // Get History Funding Rate
