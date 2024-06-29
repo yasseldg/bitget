@@ -4,12 +4,15 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/yasseldg/bitget/config"
 	"github.com/yasseldg/bitget/internal/common"
 	"github.com/yasseldg/bitget/internal/model"
 	"github.com/yasseldg/bitget/pkg/client/broker"
 	"github.com/yasseldg/bitget/pkg/client/mix"
 	"github.com/yasseldg/bitget/pkg/client/spot"
 	"github.com/yasseldg/bitget/pkg/client/ws"
+
+	v2 "github.com/yasseldg/bitget/pkg/client/v2"
 )
 
 // client
@@ -30,11 +33,24 @@ type Client struct {
 	spotOrderService   *spot.SpotOrderClient
 	spotPublicService  *spot.SpotPublicClient
 	//spotWalletService	*spot.SpotWalletClient			// @todo
+
+	userService    *v2.UserClient
+	accountService *v2.AccountClient
 }
 
 func NewClient() *Client {
 	bc := new(common.BitgetRestClient).Init()
 
+	return newClient(bc)
+}
+
+func NewClientWithCreds(creds config.InterApiCreds) *Client {
+	bc := new(common.BitgetRestClient).InitWithCreds(creds)
+
+	return newClient(bc)
+}
+
+func newClient(bc *common.BitgetRestClient) *Client {
 	return &Client{
 		client: bc,
 
@@ -49,6 +65,9 @@ func NewClient() *Client {
 		spotMarketService:  &spot.SpotMarketClient{bc},
 		spotOrderService:   &spot.SpotOrderClient{bc},
 		spotPublicService:  &spot.SpotPublicClient{bc},
+
+		userService:    &v2.UserClient{bc},
+		accountService: &v2.AccountClient{bc},
 	}
 }
 
@@ -60,6 +79,15 @@ func (c *Client) SetHttpClient(client *http.Client) *Client {
 // broker
 func (c *Client) GetBrokerService() *broker.BrokerAccountClient {
 	return c.brokerService
+}
+
+// v2
+func (c *Client) GetUserService() *v2.UserClient {
+	return c.userService
+}
+
+func (c *Client) GetAccountService() *v2.AccountClient {
+	return c.accountService
 }
 
 // mix
