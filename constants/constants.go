@@ -47,6 +47,12 @@ const (
 	MixTrace    = "/api/mix/v1/trace"
 
 	/**
+	 * V2 URL
+	 */
+	V2_User    = "/api/v2/user"
+	V2_Account = "/api/v2/account"
+
+	/**
 	 * broker url
 	 */
 	BrokerAccount = "/api/broker/v1/account"
