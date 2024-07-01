@@ -114,9 +114,10 @@ func rest() {
 	// os.Setenv("BITGET_API_PASS", "MmCvf5FLxeQgdi3t28B9emgVVZw7FsRY")
 	// c := bitget.NewClient()
 
-	c := bitget.NewClientWithCreds(fullApi())
-	// apiKeyList(c)
-	allAccountBalance(c)
+	c := bitget.NewClientWithCreds(pereApi())
+	accountInfo(c)
+	apiKeyList(c)
+	// allAccountBalance(c)
 
 	// historyFundRate(c)
 	// currentFundRate(c)
@@ -126,6 +127,28 @@ func rest() {
 	// ticker(c)
 	// depth(c)
 	// contracts(c)
+}
+
+func accountInfo(c *bitget.Client) {
+
+	resp, err := c.GetAccountService().AccountInfo()
+	if err != nil {
+		sLog.Debug("[Err] %s", err)
+		return
+	}
+
+	sLog.Debug("resp: %v ", resp)
+
+	var respObj account.AccountInfoResp
+
+	err = json.Unmarshal([]byte(resp), &respObj)
+	if err != nil {
+		sLog.Error("json.Unmarshal([]byte(resp), respObj)  --  error: %s", err)
+	}
+
+	sLog.Info("code: %s  --  msg: %s  --  reqTime: %d ", respObj.Code, respObj.Msg, respObj.RequestTime)
+
+	sLog.Info("%#v \n", respObj.Data)
 }
 
 func allAccountBalance(c *bitget.Client) {
@@ -141,7 +164,7 @@ func allAccountBalance(c *bitget.Client) {
 
 func apiKeyList(c *bitget.Client) {
 
-	resp, err := c.GetUserService().ApiKeyList("2")
+	resp, err := c.GetUserService().ApiKeyList("8562705684")
 	if err != nil {
 		sLog.Debug("[Err] %s", err)
 		return

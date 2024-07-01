@@ -27,3 +27,16 @@ func (p *AccountClient) AllAccountBalance() (string, error) {
 
 	return resp, err
 }
+
+func (p *AccountClient) AccountInfo() (string, error) {
+
+	//  "/api/v2/spot/account/info"
+
+	params := internal.NewParams()
+
+	uri := constants.V2_SpotAccount + "/info"
+
+	resp, err := p.BitgetRestClient.DoGet(uri, params)
+
+	return resp, err
+}

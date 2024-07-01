@@ -49,8 +49,9 @@ const (
 	/**
 	 * V2 URL
 	 */
-	V2_User    = "/api/v2/user"
-	V2_Account = "/api/v2/account"
+	V2_User        = "/api/v2/user"
+	V2_Account     = "/api/v2/account"
+	V2_SpotAccount = "/api/v2/spot/account"
 
 	/**
 	 * broker url
