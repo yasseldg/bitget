@@ -10,7 +10,7 @@ import (
 	"github.com/yasseldg/bitget/internal"
 	"github.com/yasseldg/bitget/internal/model"
 
-	"github.com/yasseldg/simplego/sLog"
+	"github.com/yasseldg/go-simple/logs/sLog"
 
 	"github.com/gorilla/websocket"
 	"github.com/robfig/cron"
@@ -30,14 +30,17 @@ type BitgetBaseWsClient struct {
 	Signer           *Signer
 	ListenerMap      map[model.SubscribeReq]OnReceive
 	BooksMap         map[model.SubscribeReq]model.BookInfo
+
+	creds config.InterApiCreds
 }
 
-func (p *BitgetBaseWsClient) Init() *BitgetBaseWsClient {
-	creds := config.GetDefaultCredentials()
+func (p *BitgetBaseWsClient) Init(needLogin bool, creds config.InterApiCreds) *BitgetBaseWsClient {
+	p.creds = config.GetDefaultCredentials(creds)
 
+	p.NeedLogin = needLogin
 	p.Connection = false
 	p.AllSubscribe = model.NewSet()
-	p.Signer = new(Signer).Init(creds.SecretKey)
+	p.Signer = new(Signer).Init(p.creds.Secret())
 	p.ListenerMap = make(map[model.SubscribeReq]OnReceive)
 	p.BooksMap = make(map[model.SubscribeReq]model.BookInfo)
 	p.SendMutex = &sync.Mutex{}
@@ -64,25 +67,45 @@ func (p *BitgetBaseWsClient) ConnectWebSocket() {
 	var err error
 	sLog.Info("WebSocket connecting...")
 
-	p.WebSocketClient, _, err = websocket.DefaultDialer.Dial(config.WsUrl, nil)
+	urlStr := config.WsUrlPublic
+	if p.NeedLogin {
+		urlStr = config.WsUrlPrivate
+	}
+
+	p.WebSocketClient, _, err = websocket.DefaultDialer.Dial(urlStr, nil)
 	if err != nil {
 		sLog.Error("WebSocket connected error: %s\n", err)
 		return
 	}
 
-	sLog.Info("WebSocket connected")
+	sLog.Info("WebSocket connected %s", urlStr)
 	p.Connection = true
 }
 
 func (p *BitgetBaseWsClient) Login() {
-	creds := config.GetDefaultCredentials()
+	if p.NeedLogin {
+		sLog.Info("login in ...")
+		p.login()
 
+		go func() {
+			for {
+				if p.LoginStatus {
+					sLog.Info("login in ... success")
+					break
+				}
+				time.Sleep(time.Second)
+			}
+		}()
+	}
+}
+
+func (p *BitgetBaseWsClient) login() {
 	timesStamp := internal.TimesStampSec()
 	sign := p.Signer.Sign(constants.WsAuthMethod, constants.WsAuthPath, "", timesStamp)
 
 	loginReq := model.WsLoginReq{
-		ApiKey:     creds.ApiKey,
-		Passphrase: creds.PASSPHRASE,
+		ApiKey:     p.creds.Key(),
+		Passphrase: p.creds.Pass(),
 		Timestamp:  timesStamp,
 		Sign:       sign,
 	}
@@ -168,6 +191,8 @@ func (p *BitgetBaseWsClient) tickerLoop() {
 			if p.Connection {
 				p.LastReceivedTime = time.Now()
 				// Subscribe All again
+
+				p.Login()
 				p.SubscribeAll()
 			}
 		}
@@ -228,11 +253,12 @@ func (p *BitgetBaseWsClient) readLoop() {
 			continue
 		}
 
-		if !p.CheckSum(jsonMap) {
-			continue
-		}
+		// sLog.Warn("WebSocket jsonMap: %+v", jsonMap)
+		// if !p.CheckSum(jsonMap) {
+		// 	continue
+		// }
 
-		v, e = jsonMap["data"]
+		_, e = jsonMap["data"]
 		if e {
 			listener := p.GetListener(jsonMap["arg"])
 
