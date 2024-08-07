@@ -5,15 +5,28 @@ import (
 	"strings"
 
 	"github.com/yasseldg/bitget/config"
+	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal/common"
 	"github.com/yasseldg/bitget/internal/model"
 	"github.com/yasseldg/bitget/pkg/client/broker"
 	"github.com/yasseldg/bitget/pkg/client/mix"
 	"github.com/yasseldg/bitget/pkg/client/spot"
 	"github.com/yasseldg/bitget/pkg/client/ws"
-
-	v2 "github.com/yasseldg/bitget/pkg/client/v2"
 )
+
+type InterClient interface {
+	GetBrokerService() *broker.BrokerAccountClient
+	GetMixAccountService() *mix.MixAccountClient
+	GetMixMarketService() *mix.MixMarketClient
+	GetMixOrderService() *mix.MixOrderClient
+	GetMixPlanService() *mix.MixPlanClient
+	GetMixPositionService() *mix.MixPositionClient
+	GetMixTraceService() *mix.MixTraceClient
+	GetSpotAccountService() *spot.SpotAccountClient
+	GetSpotMarketService() *spot.SpotMarketClient
+	GetSpotOrderService() *spot.SpotOrderClient
+	GetSpotPublicService() *spot.SpotPublicClient
+}
 
 // client
 type Client struct {
@@ -33,19 +46,10 @@ type Client struct {
 	spotOrderService   *spot.SpotOrderClient
 	spotPublicService  *spot.SpotPublicClient
 	//spotWalletService	*spot.SpotWalletClient			// @todo
-
-	userService    *v2.UserClient
-	accountService *v2.AccountClient
 }
 
-func NewClient() *Client {
-	bc := new(common.BitgetRestClient).Init()
-
-	return newClient(bc)
-}
-
-func NewClientWithCreds(creds config.InterApiCreds) *Client {
-	bc := new(common.BitgetRestClient).InitWithCreds(creds)
+func NewClient(creds config.InterApiCreds) *Client {
+	bc := new(common.BitgetRestClient).Init(creds)
 
 	return newClient(bc)
 }
@@ -65,9 +69,6 @@ func newClient(bc *common.BitgetRestClient) *Client {
 		spotMarketService:  &spot.SpotMarketClient{bc},
 		spotOrderService:   &spot.SpotOrderClient{bc},
 		spotPublicService:  &spot.SpotPublicClient{bc},
-
-		userService:    &v2.UserClient{bc},
-		accountService: &v2.AccountClient{bc},
 	}
 }
 
@@ -79,15 +80,6 @@ func (c *Client) SetHttpClient(client *http.Client) *Client {
 // broker
 func (c *Client) GetBrokerService() *broker.BrokerAccountClient {
 	return c.brokerService
-}
-
-// v2
-func (c *Client) GetUserService() *v2.UserClient {
-	return c.userService
-}
-
-func (c *Client) GetAccountService() *v2.AccountClient {
-	return c.accountService
 }
 
 // mix
@@ -141,8 +133,8 @@ func NewWsClient() *WsClient {
 	}
 }
 
-func (ws *WsClient) Init(listener common.OnReceive, errorListener common.OnReceive, secure bool) *ws.BitgetWsClient {
-	return ws.bws.Init(secure, listener, errorListener)
+func (ws *WsClient) Init(listener common.OnReceive, errorListener common.OnReceive, secure bool, creds config.InterApiCreds) *ws.BitgetWsClient {
+	return ws.bws.Init(secure, listener, errorListener, creds)
 }
 
 func (ws *WsClient) Close() {
@@ -198,11 +190,23 @@ func (ws *WsClient) SubscribeFutures(listener common.OnReceive, channel string, 
 	subs := make([]model.SubscribeReq, len(symbols))
 	for i, s := range symbols {
 		subs[i] = model.SubscribeReq{
-			InstType: "mc",
+			InstType: constants.ProductType_USDT_FUTURES,
 			Channel:  channel,
 			InstId:   s,
 		}
 	}
+
+	ws.bws.Subscribe(subs, listener)
+
+	return func() { ws.bws.UnSubscribe(subs) }
+}
+
+func (ws *WsClient) SubscribeFuturesOrder(listener common.OnReceive) UnscribeFunc {
+	subs := []model.SubscribeReq{{
+		InstType: constants.ProductType_USDT_FUTURES,
+		Channel:  "orders",
+		InstId:   "default",
+	}}
 
 	ws.bws.Subscribe(subs, listener)
 
