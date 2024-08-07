@@ -11,7 +11,7 @@ type MixMarketClient struct {
 }
 
 func (p *MixMarketClient) Init() *MixMarketClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 

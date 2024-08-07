@@ -12,7 +12,7 @@ type MixTraceClient struct {
 }
 
 func (p *MixTraceClient) Init() *MixTraceClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 

@@ -12,7 +12,7 @@ type MixAccountClient struct {
 }
 
 func (p *MixAccountClient) Init() *MixAccountClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 
