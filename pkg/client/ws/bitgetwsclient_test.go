@@ -13,7 +13,7 @@ func TestBitgetWsClient_New(t *testing.T) {
 		fmt.Println("success:" + message)
 	}, func(message string) {
 		fmt.Println("error:" + message)
-	})
+	}, nil)
 
 	var channelsDef []model.SubscribeReq
 	subReqDef1 := model.SubscribeReq{

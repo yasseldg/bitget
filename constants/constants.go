@@ -81,6 +81,8 @@ const (
 	ProductType_SDMCBL = "sdmcbl" // Universal margin simulation perpetual contract
 	ProductType_SCMCBL = "scmcbl" // USDC simulation perpetual contract
 
+	ProductType_USDT_FUTURES = "USDT-FUTURES" // USDT delivery contract
+
 	/**
 	CandleInterval
 	*/
@@ -118,7 +120,7 @@ const (
 	WsChannel_candle1m  = "candle1m"
 	WsChannel_candle5m  = "candle5m"
 	WsChannel_candle15m = "candle15m"
-	WsChannel_candle30m = "andle30m"
+	WsChannel_candle30m = "candle30m"
 	WsChannel_candle1H  = "candle1H"
 	WsChannel_candle4H  = "candle4H"
 	WsChannel_candle12H = "candle12H"

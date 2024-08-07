@@ -1,37 +1,25 @@
 package ws
 
 import (
+	"github.com/yasseldg/bitget/config"
 	"github.com/yasseldg/bitget/constants"
 	"github.com/yasseldg/bitget/internal/common"
 	"github.com/yasseldg/bitget/internal/model"
-
-	"github.com/yasseldg/simplego/sLog"
 )
 
 type BitgetWsClient struct {
 	bitgetBaseWsClient *common.BitgetBaseWsClient
-	NeedLogin          bool
 }
 
-func (p *BitgetWsClient) Init(needLogin bool, listener common.OnReceive, errorListener common.OnReceive) *BitgetWsClient {
-	p.bitgetBaseWsClient = new(common.BitgetBaseWsClient).Init()
+func (p *BitgetWsClient) Init(needLogin bool, listener common.OnReceive, errorListener common.OnReceive, creds config.InterApiCreds) *BitgetWsClient {
+	p.bitgetBaseWsClient = new(common.BitgetBaseWsClient).Init(needLogin, creds)
 	p.bitgetBaseWsClient.SetListener(listener, errorListener)
 	p.bitgetBaseWsClient.ConnectWebSocket()
 	p.bitgetBaseWsClient.StartReadLoop()
 	p.bitgetBaseWsClient.ExecuterPing()
 	p.bitgetBaseWsClient.StartTickerLoop()
+	p.bitgetBaseWsClient.Login()
 
-	if needLogin {
-		sLog.Info("login in ...")
-		p.bitgetBaseWsClient.Login()
-		for {
-			if !p.bitgetBaseWsClient.LoginStatus {
-				continue
-			}
-			break
-		}
-		sLog.Info("login in ... success")
-	}
 	return p
 }
 

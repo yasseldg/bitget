@@ -12,7 +12,7 @@ type MixOrderClient struct {
 }
 
 func (p *MixOrderClient) Init() *MixOrderClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 

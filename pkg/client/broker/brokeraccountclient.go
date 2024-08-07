@@ -12,7 +12,7 @@ type BrokerAccountClient struct {
 }
 
 func (p *BrokerAccountClient) Init() *BrokerAccountClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 

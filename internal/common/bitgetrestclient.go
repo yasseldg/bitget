@@ -11,26 +11,22 @@ import (
 	"github.com/yasseldg/bitget/internal"
 )
 
+type InterRestClient interface {
+	DoPost(uri string, params string) (string, error)
+	DoGet(uri string, params map[string]string) (string, error)
+}
+
 type BitgetRestClient struct {
-	ApiKey       string
-	ApiSecretKey string
-	Passphrase   string
-	BaseUrl      string
-	HttpClient   *http.Client
-	Signer       *Signer
+	HttpClient *http.Client
+	Signer     *Signer
+
+	creds config.InterApiCreds
 }
 
-func (p *BitgetRestClient) Init() *BitgetRestClient {
-	creds := config.GetDefaultCredentials()
-	return p.InitWithCreds(creds)
-}
-func (p *BitgetRestClient) InitWithCreds(creds config.InterApiCreds) *BitgetRestClient {
-	p.ApiKey = creds.Key()
-	p.ApiSecretKey = creds.Secret()
-	p.Passphrase = creds.Pass()
+func (p *BitgetRestClient) Init(creds config.InterApiCreds) *BitgetRestClient {
+	p.creds = config.GetDefaultCredentials(creds)
 
-	p.BaseUrl = config.BaseUrl
-	p.Signer = new(Signer).Init(creds.Secret())
+	p.Signer = new(Signer).Init(p.creds.Secret())
 	p.HttpClient = &http.Client{
 		Timeout: time.Duration(config.TimeoutSecond) * time.Second,
 	}
@@ -48,25 +44,12 @@ func (p *BitgetRestClient) DoPost(uri string, params string) (string, error) {
 	buffer := strings.NewReader(params)
 	request, err := http.NewRequest(constants.POST, requestUrl, buffer)
 
-	internal.Headers(request, p.ApiKey, timesStamp, sign, p.Passphrase)
-	if err != nil {
-		return "", err
-	}
-	response, err := p.HttpClient.Do(request)
-
+	internal.Headers(request, p.creds.Key(), timesStamp, sign, p.creds.Pass())
 	if err != nil {
 		return "", err
 	}
 
-	defer response.Body.Close()
-
-	bodyStr, err := io.ReadAll(response.Body)
-	if err != nil {
-		return "", err
-	}
-
-	responseBodyString := string(bodyStr)
-	return responseBodyString, err
+	return p.do(request)
 }
 
 func (p *BitgetRestClient) DoGet(uri string, params map[string]string) (string, error) {
@@ -75,13 +58,18 @@ func (p *BitgetRestClient) DoGet(uri string, params map[string]string) (string, 
 
 	sign := p.Signer.Sign(constants.GET, uri, body, timesStamp)
 
-	requestUrl := p.BaseUrl + uri + body
+	requestUrl := config.BaseUrl + uri + body
 
 	request, err := http.NewRequest(constants.GET, requestUrl, nil)
 	if err != nil {
 		return "", err
 	}
-	internal.Headers(request, p.ApiKey, timesStamp, sign, p.Passphrase)
+	internal.Headers(request, p.creds.Key(), timesStamp, sign, p.creds.Pass())
+
+	return p.do(request)
+}
+
+func (p *BitgetRestClient) do(request *http.Request) (string, error) {
 
 	response, err := p.HttpClient.Do(request)
 

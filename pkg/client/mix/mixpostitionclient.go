@@ -11,7 +11,7 @@ type MixPositionClient struct {
 }
 
 func (p *MixPositionClient) Init() *MixPositionClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 
