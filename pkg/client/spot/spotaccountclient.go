@@ -12,7 +12,7 @@ type SpotAccountClient struct {
 }
 
 func (p *SpotAccountClient) Init() *SpotAccountClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 

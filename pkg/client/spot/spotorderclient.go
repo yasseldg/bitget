@@ -12,7 +12,7 @@ type SpotOrderClient struct {
 }
 
 func (p *SpotOrderClient) Init() *SpotOrderClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 

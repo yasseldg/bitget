@@ -11,7 +11,7 @@ type SpotMarketClient struct {
 }
 
 func (p *SpotMarketClient) Init() *SpotMarketClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 

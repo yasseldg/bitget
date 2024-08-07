@@ -11,7 +11,7 @@ type SpotPublicClient struct {
 }
 
 func (p *SpotPublicClient) Init() *SpotPublicClient {
-	p.BitgetRestClient = new(common.BitgetRestClient).Init()
+	p.BitgetRestClient = new(common.BitgetRestClient).Init(nil)
 	return p
 }
 
