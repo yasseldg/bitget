@@ -1,4 +1,4 @@
-package account
+package response
 
 import "github.com/yasseldg/bitget/pkg/model"
 
