@@ -2,6 +2,7 @@ package request
 
 import (
 	"github.com/yasseldg/bitget/pkg/model/v2/errors"
+
 	"github.com/yasseldg/go-simple/logs/sLog"
 )
 
