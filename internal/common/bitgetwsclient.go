@@ -96,6 +96,8 @@ func (p *BitgetBaseWsClient) Login() {
 				time.Sleep(time.Second)
 			}
 		}()
+
+		time.Sleep(time.Second * 3)
 	}
 }
 
