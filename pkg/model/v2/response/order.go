@@ -7,7 +7,7 @@ import (
 
 type OrderResp struct {
 	model.BaseResp `json:",inline"`
-	Data           common.OrderIds `json:"data"`
+	Data           Order `json:"data"`
 }
 
 type OrdersResp struct {
@@ -23,18 +23,10 @@ type OrdersData struct {
 type Order struct {
 	common.Order `json:",inline"`
 
-	BaseVolume       string `json:"baseVolume"`
-	Fee              string `json:"fee"`
-	Force            string `json:"force"`
-	TotalProfits     string `json:"totalProfits"`
-	QuoteVolume      string `json:"quoteVolume"`
-	Leverage         string `json:"leverage"`
-	EnterPointSource string `json:"enterPointSource"`
-	OrderSource      string `json:"orderSource"`
-	TradeSide        string `json:"tradeSide"`
-
-	PresetStopSurplusPrice string `json:"presetStopSurplusPrice"`
-	PresetStopLossPrice    string `json:"presetStopLossPrice"`
+	BaseVolume   string `json:"baseVolume"`
+	Fee          string `json:"fee"`
+	TotalProfits string `json:"totalProfits"`
+	QuoteVolume  string `json:"quoteVolume"`
 }
 
 // {
