@@ -14,7 +14,6 @@ func Private() {
 	// accountInfo(rest)
 	// accountList(rest)
 	// allAccountBalance(rest)
-	// getPendingOrders(rest)
 	changeMarginMode(rest)
 	changePositionMode(rest)
 
@@ -25,7 +24,6 @@ func Private() {
 	// accountInfo(rest1)
 	// accountList(rest1)
 	// allAccountBalance(rest1)
-	// getPendingOrders(rest1)
 	changeMarginMode(rest1)
 	changePositionMode(rest1)
 }
