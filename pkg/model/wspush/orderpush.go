@@ -18,20 +18,18 @@ type WsOrder struct {
 		FeeCoin string `json:"feeCoin"`
 		Fee     string `json:"fee"`
 	} `json:"feeDetail"`
-	FillFee          string `json:"fillFee"`
-	FillFeeCoin      string `json:"fillFeeCoin"`
-	FillNotionalUsd  string `json:"fillNotionalUsd"`
-	FillPrice        string `json:"fillPrice"`
-	BaseVolume       string `json:"baseVolume"`
-	FillTime         string `json:"fillTime"`
-	Force            string `json:"force"`
-	Leverage         string `json:"leverage"`
-	NotionalUsd      string `json:"notionalUsd"`
-	Pnl              string `json:"pnl"`
-	StpMode          string `json:"stpMode"`
-	EnterPointSource string `json:"enterPointSource"`
-	OrderScope       string `json:"orderScope"`
-	OrderSide        string `json:"orderSide"`
+	FillFee         string `json:"fillFee"`
+	FillFeeCoin     string `json:"fillFeeCoin"`
+	FillNotionalUsd string `json:"fillNotionalUsd"`
+	FillPrice       string `json:"fillPrice"`
+	BaseVolume      string `json:"baseVolume"`
+	FillTime        string `json:"fillTime"`
+
+	NotionalUsd string `json:"notionalUsd"`
+	Pnl         string `json:"pnl"`
+	StpMode     string `json:"stpMode"`
+	OrderScope  string `json:"orderScope"`
+	OrderSide   string `json:"orderSide"`
 }
 
 // {
