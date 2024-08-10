@@ -28,4 +28,12 @@ type Order struct {
 	UTime      string `json:"uTime"`
 
 	ReduceOnly string `json:"reduceOnly"`
+
+	PresetStopSurplusPrice string `json:"presetStopSurplusPrice"`
+	PresetStopLossPrice    string `json:"presetStopLossPrice"`
+
+	EnterPointSource string `json:"enterPointSource"`
+
+	Force    string `json:"force"`
+	Leverage string `json:"leverage"`
 }
