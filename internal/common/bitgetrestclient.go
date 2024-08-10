@@ -36,7 +36,6 @@ func (p *BitgetRestClient) Init(creds config.InterApiCreds) *BitgetRestClient {
 
 func (p *BitgetRestClient) DoPost(uri string, params string) (string, error) {
 	timesStamp := internal.TimesStamp()
-	//body, _ := internal.BuildJsonParams(params)
 
 	sign := p.Signer.Sign(constants.POST, uri, params, timesStamp)
 	requestUrl := config.BaseUrl + uri
@@ -84,6 +83,5 @@ func (p *BitgetRestClient) do(request *http.Request) (string, error) {
 		return "", err
 	}
 
-	responseBodyString := string(bodyStr)
-	return responseBodyString, err
+	return string(bodyStr), err
 }
