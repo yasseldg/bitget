@@ -20,6 +20,7 @@ type InterRest interface {
 	PlaceOrder(productType, symbol, side, size, marginMode, marginCoin, orderType string) (*v2.PlaceOrder, error)
 	ModifyOrder(productType, symbol, newClientOid string) (*v2.ModifyOrder, error)
 	CancelOrder(productType, symbol string) (*v2.CancelOrder, error)
+	ClosePositions(productType string) (*v2.ClosePositions, error)
 }
 
 // user
@@ -65,4 +66,8 @@ func (r *Rest) ModifyOrder(productType, symbol, newClientOid string) (*v2.Modify
 
 func (r *Rest) CancelOrder(productType, symbol string) (*v2.CancelOrder, error) {
 	return v2.NewCancelOrder(r.c, productType, symbol)
+}
+
+func (r *Rest) ClosePositions(productType string) (*v2.ClosePositions, error) {
+	return v2.NewClosePositions(r.c, productType)
 }
