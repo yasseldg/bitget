@@ -1,6 +1,7 @@
 package bitget
 
 import (
+	v1 "github.com/yasseldg/bitget/pkg/client/v1"
 	v2 "github.com/yasseldg/bitget/pkg/client/v2"
 )
 
@@ -21,6 +22,19 @@ type InterRest interface {
 	ModifyOrder(productType, symbol, newClientOid string) (*v2.ModifyOrder, error)
 	CancelOrder(productType, symbol string) (*v2.CancelOrder, error)
 	ClosePositions(productType string) (*v2.ClosePositions, error)
+
+	AgentCustomerList() (*v1.AgentCustomerList, error)
+	AgentCustomerTradeVolumeList() (*v1.AgentCustomerTradeVolumeList, error)
+}
+
+// agent
+
+func (r *Rest) AgentCustomerList() (*v1.AgentCustomerList, error) {
+	return v1.NewAgentCustomerList(r.c)
+}
+
+func (r *Rest) AgentCustomerTradeVolumeList() (*v1.AgentCustomerTradeVolumeList, error) {
+	return v1.NewAgentCustomerTradeVolumeList(r.c)
 }
 
 // user
